@@ -1,57 +1,133 @@
-let opcion = parseInt(
-  prompt(`Bienvenido, seleccione:
-1- Para buscar zapatillas por su nombre/marca
-2- Para buscar zapatillas por su precio 
-3- Para buscar zapatillas por su color
-4- Para saber el costo de adquirir un par de TODOS nuestros productos`)
-);
+const productos = document.getElementById("productos");
+const botonAbrirCarrito = document.getElementById("carritoIcon");
+const modalBody = document.querySelector(".modal-body");
+const precioFinal = document.querySelector(".precio-final");
 
-if (opcion === 1) {
-  buscar = prompt("Ingrese el nombre de lo que busca");
-  buscarXNombre(buscar.toUpperCase());
-} else if (opcion === 2) {
-  buscar = parseInt(prompt("Ingrese el monto que esta dispuesto a gastar"));
-  buscarXPrecio(buscar);
-} else if (opcion === 3) {
-  buscar = prompt("Ingrese el color que busca");
-  buscarXColor(buscar.toLowerCase());
-} else if (opcion === 4) {
-   calcularTotal()
-  }
+function renderizarProd(producto) {
+  const card = document.createElement("div");
+  card.classList.add("col-md-4", "mb-3");
 
-function buscarXNombre(buscar) {
-  const encontrado = catalogo.filter((item) => item.nombre.includes(buscar));
-  if (encontrado.length > 0) {
-    console.table(encontrado);
-  } else {
-    alert("Lo siento, no contamos con el producto solicitado");
-  }
+  card.innerHTML = `
+    <div class="card" style="width: 18rem;">
+      <img src="${producto.imagen}" class="card-img-top" alt="${
+    producto.nombre
+  }">
+      <div class="card-body">
+        <h5 class="card-title">${producto.nombre}</h5>
+        <p class="card-text">Precio: $${producto.precio}</p>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <label for="talle" class="mb-2">Tamaño:</label>
+            <select class="form-select talle-selector" aria-label="Tamaño">
+              ${producto.talles
+                .map((talle) => `<option>${talle}</option>`)
+                .join("")}
+            </select>
+          </li>
+          <li class="list-group-item">
+            <label for="color" class="mb-2">Color:</label>
+            <select class="form-select color-selector " aria-label="Color">
+              ${producto.colores
+                .map((color) => `<option>${color}</option>`)
+                .join("")}
+            </select>
+          </li>
+        </ul>
+        <a href="#" class="btn btn-primary d-block outline-primary">Agregar al carrito</a>
+      </div>
+    </div>
+  `;
+  productos.append(card);
 }
 
-function buscarXPrecio(buscar) {
-  const encontrado = catalogo.filter((item) => item.precio <= buscar);
+catalogo.forEach((producto) => renderizarProd(producto));
 
-  if (encontrado.length > 0) {
-    console.table(encontrado);
-  } else {
-    alert("Lo siento, no contamos con productos de ese monto");
+let carrito = [];
+
+productos.addEventListener("click", (e) => {
+  if (e.target.classList.contains("btn-primary")) {
+    const card = e.target.parentElement.parentElement;
+
+    const producto = {
+      nombre: card.querySelector(".card-title").textContent,
+      imagen: card.querySelector("img").src,
+      precio: parseFloat(
+        card.querySelector(".card-text").textContent.replace("Precio: $", "")
+      ),
+      talle: card.querySelector(".talle-selector").value,
+      color: card.querySelector(".color-selector").value,
+      cantidad: 1,
+    };
+
+    const existe = carrito.some(
+      (item) =>
+        item.nombre == producto.nombre &&
+        item.color == producto.color &&
+        item.talle == producto.talle
+    );
+
+    if (existe) {
+      const zapatillas = carrito.map((item) => {
+        if (
+          item.nombre == producto.nombre &&
+          item.color == producto.color &&
+          item.talle == producto.talle
+        ) {
+          item.cantidad++;
+          item.precio = parseInt(item.precio) * item.cantidad;
+          return item;
+        } else {
+          return item;
+        }
+      });
+
+      carrito = [...zapatillas];
+    } else {
+      carrito.push(producto);
+    }
   }
+  console.log(carrito);
+});
+
+const renderizarCarrito = () => {};
+
+botonAbrirCarrito.addEventListener("click", (e) => {
+  console.log("carrito abierto");
+  limpiarHTML();
+  carrito.forEach((producto) => {
+    const container = document.createElement("div");
+    container.innerHTML = `
+    <div class="info d-flex justify-content-between">
+    <img src="${producto.imagen}" alt="${producto.nombre}" class="w-25" />
+    <div class="detalles d-flex flex-column">
+      <span class="nombre">${producto.nombre}</span>
+      <div class="especificos">
+        <span class="talle">Talle: ${producto.talle}</span>
+        <span class="color">Color: ${producto.color}</span>
+        </div>
+        <span class="cantidad">Cantidad: ${producto.cantidad}</span>
+    </div>
+    <span class="precio">$${producto.precio.toLocaleString("es-AR")}</span>
+    <a href="#" class="borrar-producto" data-nombre="${producto.nombre}">X</a>
+  </div>
+  <div class="precio-unidad"></div>
+    `;
+
+    modalBody.append(container);
+  });
+  actualizarPrecioTotal()
+});
+function actualizarPrecioTotal () {
+let precioTotal = carrito.reduce((aux, total) => aux + total.precio, 0);
+precioFinal.textContent = "$" + precioTotal.toLocaleString("es-AR");}
+
+function limpiarHTML() {
+  modalBody.innerHTML = "";
 }
 
-function buscarXColor(buscar) {
-  const encontrado = catalogo.filter((item) => item.colores.includes(buscar));
-
-  if (encontrado,length > 0 ) {
-    console.table(encontrado);
-  } else {
-    alert("Lo siento, no contamos con el color solicitado");
-  }
-}
-
-function calcularTotal() {
-    const total = catalogo.reduce((total,item) => {
-       return total + item.precio
-    },0)
-
-    alert(`El total por adquirir un par de TODOS nuestros productos es de : $${total.toLocaleString('es-AR')}`)
-}
+modalBody.addEventListener("click", (e) => {
+  const nombreProducto = e.target.dataset.nombre;
+  carrito = carrito.filter((producto) => producto.nombre !== nombreProducto);
+  actualizarPrecioTotal()
+  e.target.closest('.info').remove();
+});
