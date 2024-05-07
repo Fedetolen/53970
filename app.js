@@ -169,7 +169,7 @@ async function pedirPrecioDolar() {
   const precioVenta = informacion.oficial.value_sell;
   const precio = document.createElement("p");
   precio.innerHTML = `<p>Precio dolar oficial:$${precioVenta}</p>`;
-  console.log(precio);
+  
 
   containerDolar.appendChild(precio);
 }
