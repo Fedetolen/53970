@@ -2,7 +2,7 @@ const catalogo = [
   {
     id: 1,
     nombre: "ZAPATILLAS PUMA CAVEN 2.0",
-    precio: 101909,
+    precio: 350,
     imagen:"img/ZAPATILLAS PUMA CAVEN 2.0.jpg",
     colores: ["blanco", "negro", "crudo"],
     talles: [38, 39, 40, 41, 43],
@@ -10,7 +10,7 @@ const catalogo = [
   {
     id: 2,
     nombre: "ZAPATILLAS ADIDAS QT RACER 3.0",
-    precio: 78500,
+    precio: 275,
     imagen:"img/ZAPATILLAS ADIDAS QT RACER 3.0.jpg",
     colores: ["azul", "negro", "rojo"],
     talles: [37, 39, 40, 41, 42],
@@ -18,7 +18,7 @@ const catalogo = [
   {
     id: 3,
     nombre: "ZAPATILLAS RUNNING ADIDAS DURAMO PROTECT",
-    precio: 98700,
+    precio: 250,
     imagen:"img/ZAPATILLAS RUNNING ADIDAS DURAMO PROTECT.jpg",
     colores: ["azul","blanco", "negro", "gris"],
     talles: [38, 39, 40, 41, 43],
@@ -26,7 +26,7 @@ const catalogo = [
   {
     id: 4,
     nombre: "ZAPATILLAS DE TENIS ADIDAS SOLEMATCH CONTROL BLANCA",
-    precio: 115500,
+    precio: 115,
     imagen:"img/ZAPATILLAS DE TENIS ADIDAS SOLEMATCH CONTROL BLANCA.jpg",
     colores: ["blanco", "negro", "azul"],
     talles: [38, 39, 40, 41, 42, 43],
@@ -34,7 +34,7 @@ const catalogo = [
   {
     id: 5,
     nombre: "ZAPATILLAS RUNNING PUMA SKYROCKET",
-    precio: 58500,
+    precio: 190,
     imagen:"img/ZAPATILLAS RUNNING PUMA SKYROCKET.jpg",
     colores: [ "negro","verde" ],
     talles: [38, 39, 40, 41, 43],
@@ -42,7 +42,7 @@ const catalogo = [
   {
     id: 6,
     nombre: "ZAPATILLAS 47 STREET ROCK",
-    precio: 119200,
+    precio: 230,
     imagen:"img/ZAPATILLAS 47 STREET ROCK.jpg",
     colores: ["negro", "blanco", "crudo"],
     talles: [38, 39, 40,],
@@ -50,7 +50,7 @@ const catalogo = [
   {
     id: 7,
     nombre: "ZAPATILLAS DE ENTRENAMIENTO UNDER ARMOUR CHARGED SKYLINE 3",
-    precio: 113200,
+    precio: 123,
     imagen:"img/ZAPATILLAS DE ENTRENAMIENTO UNDER ARMOUR CHARGED SKYLINE 3.jpg",
     colores: ["rosa", "blanco", "celeste"],
     talles: [38, 39, 40, 41],

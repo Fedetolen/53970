@@ -2,10 +2,12 @@ const productos = document.getElementById("productos");
 const botonAbrirCarrito = document.getElementById("carritoIcon");
 const modalBody = document.querySelector(".modal-body");
 const precioFinal = document.querySelector(".precio-final");
+const containerDolar = document.getElementById("containerDolar");
+const botonComprar = document.getElementById("botonComprar");
 
 function renderizarProd(producto) {
   const card = document.createElement("div");
-  card.classList.add("col-md-4", "mb-3");
+  card.classList.add("col-md-4", "mb-3", "col-12");
 
   card.innerHTML = `
     <div class="card" style="width: 18rem;">
@@ -85,6 +87,7 @@ productos.addEventListener("click", (e) => {
     } else {
       carrito.push(producto);
     }
+    alertaProductoAñadido();
   }
   guardarCarritoEnLocalStorage();
 });
@@ -92,7 +95,7 @@ productos.addEventListener("click", (e) => {
 const renderizarCarrito = () => {};
 
 botonAbrirCarrito.addEventListener("click", (e) => {
-   limpiarHTML();
+  limpiarHTML();
   carrito.forEach((producto) => {
     const container = document.createElement("div");
     container.innerHTML = `
@@ -106,7 +109,7 @@ botonAbrirCarrito.addEventListener("click", (e) => {
         </div>
         <span class="cantidad">Cantidad: ${producto.cantidad}</span>
     </div>
-    <span class="precio">$${producto.precio.toLocaleString("es-AR")}</span>
+    <span class="precio">$${producto.precio} USD</span>
     <a href="#" class="borrar-producto" data-nombre="${producto.nombre}">X</a>
   </div>
   <div class="precio-unidad"></div>
@@ -114,11 +117,12 @@ botonAbrirCarrito.addEventListener("click", (e) => {
 
     modalBody.append(container);
   });
-  actualizarPrecioTotal()
+  actualizarPrecioTotal();
 });
-function actualizarPrecioTotal () {
-let precioTotal = carrito.reduce((aux, total) => aux + total.precio, 0);
-precioFinal.textContent = "$" + precioTotal.toLocaleString("es-AR");}
+function actualizarPrecioTotal() {
+  let precioTotal = carrito.reduce((aux, total) => aux + total.precio, 0);
+  precioFinal.textContent = "$" + precioTotal + " USD";
+}
 
 function limpiarHTML() {
   modalBody.innerHTML = "";
@@ -127,27 +131,71 @@ function limpiarHTML() {
 modalBody.addEventListener("click", (e) => {
   const nombreProducto = e.target.dataset.nombre;
   carrito = carrito.filter((producto) => producto.nombre !== nombreProducto);
-  actualizarPrecioTotal()
-  e.target.closest('.info').remove();
-  guardarCarritoEnLocalStorage()
+  actualizarPrecioTotal();
+  e.target.closest(".info").remove();
+  guardarCarritoEnLocalStorage();
 });
 
-
 function guardarCarritoEnLocalStorage() {
- 
   const carritoJSON = JSON.stringify(carrito);
-  
- 
-  localStorage.setItem('carrito', carritoJSON);
+
+  localStorage.setItem("carrito", carritoJSON);
 }
 
-
-window.addEventListener('DOMContentLoaded', () => {
-  const carritoGuardado = localStorage.getItem('carrito');
+window.addEventListener("DOMContentLoaded", () => {
+  const carritoGuardado = localStorage.getItem("carrito");
   if (carritoGuardado) {
     carrito = JSON.parse(carritoGuardado);
-    renderizarCarrito(); // 
-    actualizarPrecioTotal(); // 
+    renderizarCarrito(); //
+    actualizarPrecioTotal(); //
   }
 });
 
+function alertaProductoAñadido() {
+  Swal.fire({
+    position: "center-center",
+    icon: "success",
+    title: "Producto añadido al carrito con exito",
+    showConfirmButton: false,
+    timer: 1500,
+  });
+}
+
+async function pedirPrecioDolar() {
+  const URLDOLAR = "https://api.bluelytics.com.ar/v2/latest";
+
+  const respuesta = await fetch(URLDOLAR);
+  const informacion = await respuesta.json();
+  const precioVenta = informacion.oficial.value_sell;
+  const precio = document.createElement("p");
+  precio.innerHTML = `<p>Precio dolar oficial:$${precioVenta}</p>`;
+  console.log(precio);
+
+  containerDolar.appendChild(precio);
+}
+
+pedirPrecioDolar();
+
+botonComprar.addEventListener("click", () => {
+  carrito = [];
+
+  localStorage.removeItem("carrito");
+
+  Swal.fire({
+    title: "Compra realizada con éxito",
+    showClass: {
+      popup: `
+              animate__animated
+              animate__fadeInUp
+              animate__faster
+          `,
+    },
+    hideClass: {
+      popup: `
+              animate__animated
+              animate__fadeOutDown
+              animate__faster
+          `,
+    },
+  });
+});
